@@ -59,10 +59,14 @@ func createSOMASServer(
 		gameState: gamestate.GameState{
 			Season:         1,
 			Turn:           1,
+			CommonPool:     gameConfig.InitialCommonPool,
 			ClientInfos:    clientInfos,
 			Environment:    disasters.InitEnvironment(clientIDs, gameConfig.DisasterConfig),
 			DeerPopulation: foraging.CreateDeerPopulationModel(gameConfig.ForagingConfig),
 			IIGOHistory:    []shared.Accountability{},
+			SpeakerID:      shared.Team1,
+			JudgeID:        shared.Team2,
+			PresidentID:    shared.Team3,
 		},
 	}
 
