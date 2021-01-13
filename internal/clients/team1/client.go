@@ -35,6 +35,7 @@ func DefaultClient(id shared.ClientID) baseclient.Client {
 			desperateStealAmount:                30,
 			maxOpinion:                          10,
 			soloDeerHuntContribution:            40,
+			forageMethod:                        FlipForage,
 		},
 
 		forageHistory:     ForageHistory{},
