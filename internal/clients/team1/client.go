@@ -45,6 +45,93 @@ func DefaultClient(id shared.ClientID) baseclient.Client {
 	}
 }
 
+func ROIClient(id shared.ClientID) baseclient.Client {
+	return &client{
+		BaseClient:    baseclient.NewClient(id),
+		BasePresident: &baseclient.BasePresident{},
+		config: team1Config{
+			anxietyThreshold:                    50,
+			randomForageTurns:                   5,
+			flipForageScale:                     0.3,
+			forageContributionCapPercent:        0.2,
+			forageContributionAnxiousCapPercent: 0.8,
+			forageContributionNoisePercent:      0.01,
+			evadeTaxes:                          false,
+			kickstartTaxPercent:                 0,
+			desperateStealAmount:                30,
+			maxOpinion:                          10,
+			soloDeerHuntContribution:            40,
+			flipForage:                          false,
+			roiForage:                           true,
+			regressionForage:                    false,
+		},
+
+		forageHistory:     ForageHistory{},
+		reportedResources: map[shared.ClientID]bool{},
+		teamOpinions:      map[shared.ClientID]Opinion{},
+		receivedOffer:     map[shared.ClientID]shared.Resources{},
+		trustTeams:        map[shared.ClientID]float64{},
+	}
+}
+
+func RegressionClient(id shared.ClientID) baseclient.Client {
+	return &client{
+		BaseClient:    baseclient.NewClient(id),
+		BasePresident: &baseclient.BasePresident{},
+		config: team1Config{
+			anxietyThreshold:                    50,
+			randomForageTurns:                   5,
+			flipForageScale:                     0.3,
+			forageContributionCapPercent:        0.2,
+			forageContributionAnxiousCapPercent: 0.8,
+			forageContributionNoisePercent:      0.01,
+			evadeTaxes:                          false,
+			kickstartTaxPercent:                 0,
+			desperateStealAmount:                30,
+			maxOpinion:                          10,
+			soloDeerHuntContribution:            40,
+			flipForage:                          false,
+			roiForage:                           false,
+			regressionForage:                    true,
+		},
+
+		forageHistory:     ForageHistory{},
+		reportedResources: map[shared.ClientID]bool{},
+		teamOpinions:      map[shared.ClientID]Opinion{},
+		receivedOffer:     map[shared.ClientID]shared.Resources{},
+		trustTeams:        map[shared.ClientID]float64{},
+	}
+}
+
+func FlipClient(id shared.ClientID) baseclient.Client {
+	return &client{
+		BaseClient:    baseclient.NewClient(id),
+		BasePresident: &baseclient.BasePresident{},
+		config: team1Config{
+			anxietyThreshold:                    50,
+			randomForageTurns:                   0,
+			flipForageScale:                     0.3,
+			forageContributionCapPercent:        0.2,
+			forageContributionAnxiousCapPercent: 0.8,
+			forageContributionNoisePercent:      0.01,
+			evadeTaxes:                          false,
+			kickstartTaxPercent:                 0,
+			desperateStealAmount:                30,
+			maxOpinion:                          10,
+			soloDeerHuntContribution:            40,
+			flipForage:                          true,
+			roiForage:                           false,
+			regressionForage:                    false,
+		},
+
+		forageHistory:     ForageHistory{},
+		reportedResources: map[shared.ClientID]bool{},
+		teamOpinions:      map[shared.ClientID]Opinion{},
+		receivedOffer:     map[shared.ClientID]shared.Resources{},
+		trustTeams:        map[shared.ClientID]float64{},
+	}
+}
+
 type EmotionalState int
 type Opinion int
 
@@ -74,6 +161,11 @@ type team1Config struct {
 
 	// flipForageScale scales the amount contributed by flipForage
 	flipForageScale float64
+
+	// Choosing how to forage
+	flipForage       bool
+	roiForage        bool
+	regressionForage bool
 
 	// forageContributionCapPercent is the maximum percent of current resources we
 	// will use for foraging

@@ -1,6 +1,7 @@
 package team1
 
 import (
+	"fmt"
 	"math"
 	"math/rand"
 
@@ -58,17 +59,20 @@ func (c client) roiForage() shared.ForageDecision {
 		}
 	}
 	expectedOutcome := bestROIOutcome(c.forageHistory[forageType])
-
+	cap := c.config.forageContributionCapPercent
+	if c.emotionalState() == Anxious {
+		cap = c.config.forageContributionAnxiousCapPercent
+	}
 	contribution := expectedOutcome.contribution
 	// Cap to 20% of resources
 	contribution = shared.Resources(math.Min(
 		float64(contribution),
-		c.config.forageContributionCapPercent*float64(c.gameState().ClientInfo.Resources),
+		cap*float64(c.gameState().ClientInfo.Resources),
 	))
 	// Add some noise
 	contribution += shared.Resources(math.Min(
 		rand.Float64(),
-		c.config.forageContributionNoisePercent*float64(c.gameState().ClientInfo.Resources),
+		cap*float64(c.gameState().ClientInfo.Resources),
 	))
 
 	forageDecision := shared.ForageDecision{
@@ -237,9 +241,17 @@ func (c *client) DecideForage() (shared.ForageDecision, error) {
 	} else if c.emotionalState() == Desperate {
 		c.Logf("[Forage decision]: desperate")
 		return c.desperateForage(), nil
-	} else {
+	} else if c.config.flipForage {
 		c.Logf("[Forage decision]: flip")
 		return c.flipForage(), nil
+	} else if c.config.regressionForage {
+		c.Logf("[Forage decision]: regression")
+		return c.regressionForage()
+	} else if c.config.roiForage {
+		c.Logf("[Forage decision]: roi")
+		return c.roiForage(), nil
+	} else {
+		return shared.ForageDecision{Type: shared.DeerForageType, Contribution: 0}, fmt.Errorf("Can't decide on a forage for %v", c.GetID())
 	}
 }
 
