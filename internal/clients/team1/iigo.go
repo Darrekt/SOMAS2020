@@ -179,6 +179,9 @@ func (c *client) RequestAllocation() shared.Resources {
 
 	// Unintentionally nicking from commonPool so limiting amount. GetRecommendation is too powerful.
 	allocation := allocationPair.Values[0]
+	c.Logf("Taking %v from CP, Current CP: %v, Expected Allocation Amount %v",
+		allocation, c.gameState().CommonPool, c.LocalVariableCache[rules.ExpectedAllocation].Values[0],
+	)
 	if allocation != 0 {
 		c.Logf("Taking %v from common pool", allocation)
 	}

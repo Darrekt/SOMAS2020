@@ -55,6 +55,7 @@ func (c *client) GetGiftRequests() shared.GiftRequestDict {
 		for clientID, status := range c.gameState().ClientLifeStatuses {
 			if status != shared.Dead && clientID != c.GetID() {
 				// TODO: Probably best to request a portion of Living Cost + Tax?
+				c.Logf("Requesting gift of 20: %v", clientID)
 				requests[clientID] = shared.GiftRequest(2 * c.gameConfig().CostOfLiving)
 			}
 		}
@@ -132,6 +133,7 @@ func (c *client) UpdateGiftInfo(receivedResponses shared.GiftResponseDict) {
 			c.teamOpinions[id]--
 		}
 	}
+	c.Logf("[GIFTS OPINION] %v", c.teamOpinions)
 }
 
 // SentGift is executed at the end of each turn and notifies clients that
@@ -161,22 +163,28 @@ func (c *client) ReceivedGift(received shared.Resources, from shared.ClientID) {
 func (c *client) DecideGiftAmount(toTeam shared.ClientID, giftOffer shared.Resources) shared.Resources {
 	resourcesAvailable := c.gameState().ClientInfo.Resources
 	teamStatus := c.gameState().ClientLifeStatuses
-
+	c.Logf("[GIFTS OPINION] Sending Gifts")
 	switch {
 	case resourcesAvailable <= c.config.anxietyThreshold:
+		c.Logf("[GIFTS OPINION] %v to %v", 0, toTeam)
 		return 0
 	case resourcesAvailable <= giftOffer:
+		c.Logf("[GIFTS OPINION] %v to %v", 0, toTeam)
 		return 0
 	case c.teamOpinions[toTeam] < -c.config.maxOpinion:
 		// Skip the giftOffer. We don't like them >:)
+		c.Logf("[GIFTS OPINION] %v to %v", 0, toTeam)
 		return 0
 	case c.teamOpinions[toTeam] > c.config.maxOpinion:
+		c.Logf("[GIFTS OPINION] %v to %v", giftOffer, toTeam)
 		return giftOffer
 	case teamStatus[toTeam] == shared.Critical:
+		c.Logf("[GIFTS OPINION] %v to %v", giftOffer, toTeam)
 		// We are trying to be nice.
 		return giftOffer
 	default:
 		offerResource := giveLeftoverResources(resourcesAvailable, c.config.anxietyThreshold, giftOffer)
+		c.Logf("[GIFTS OPINION] %v to %v", offerResource, toTeam)
 		if offerResource != -1 {
 			return offerResource
 		}
