@@ -136,6 +136,11 @@ func (c client) flipForage() shared.ForageDecision {
 	totalContributionLastTurn := shared.Resources(0)
 	totalHuntersLastTurn := 0
 	totalRevenueLastTurn := shared.Resources(0)
+	cap := c.config.forageContributionCapPercent
+	if c.emotionalState() == Anxious {
+		cap = c.config.forageContributionAnxiousCapPercent
+	}
+
 	for _, outcome := range deerHistory {
 		if outcome.turn == c.gameState().Turn-1 {
 			totalContributionLastTurn += outcome.contribution
@@ -153,9 +158,7 @@ func (c client) flipForage() shared.ForageDecision {
 
 	if c.forageType == shared.DeerForageType && (totalContributionLastTurn == shared.Resources(0) || totalHuntersLastTurn == 0) {
 		contribution := shared.Resources(math.Min(
-			float64(shared.Resources(
-				c.config.forageContributionCapPercent)*resources,
-			),
+			float64(shared.Resources(cap)*resources),
 			float64(c.config.soloDeerHuntContribution),
 		))
 		// Big contribution
@@ -171,9 +174,7 @@ func (c client) flipForage() shared.ForageDecision {
 	contribution := shared.Resources(c.config.flipForageScale) * totalROI * averageContribution
 	contribution += shared.Resources(c.config.forageContributionNoisePercent) * resources
 	contribution = shared.Resources(math.Min(
-		float64(shared.Resources(
-			c.config.forageContributionCapPercent)*resources,
-		),
+		float64(shared.Resources(cap)*resources),
 		float64(contribution),
 	))
 	c.Logf("[Forage decision] flipping results: %v", contribution)

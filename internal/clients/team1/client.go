@@ -24,16 +24,17 @@ func DefaultClient(id shared.ClientID) baseclient.Client {
 		BaseClient:    baseclient.NewClient(id),
 		BasePresident: &baseclient.BasePresident{},
 		config: team1Config{
-			anxietyThreshold:               50,
-			randomForageTurns:              0,
-			flipForageScale:                0.3,
-			forageContributionCapPercent:   0.2,
-			forageContributionNoisePercent: 0.01,
-			evadeTaxes:                     false,
-			kickstartTaxPercent:            0,
-			desperateStealAmount:           30,
-			maxOpinion:                     10,
-			soloDeerHuntContribution:       40,
+			anxietyThreshold:                    50,
+			randomForageTurns:                   0,
+			flipForageScale:                     0.3,
+			forageContributionCapPercent:        0.2,
+			forageContributionAnxiousCapPercent: 0.8,
+			forageContributionNoisePercent:      0.01,
+			evadeTaxes:                          false,
+			kickstartTaxPercent:                 0,
+			desperateStealAmount:                30,
+			maxOpinion:                          10,
+			soloDeerHuntContribution:            40,
 		},
 
 		forageHistory:     ForageHistory{},
@@ -76,7 +77,8 @@ type team1Config struct {
 
 	// forageContributionCapPercent is the maximum percent of current resources we
 	// will use for foraging
-	forageContributionCapPercent float64
+	forageContributionCapPercent        float64
+	forageContributionAnxiousCapPercent float64
 
 	// desperateStealAmount is the max randomness we will add to our foraging
 	// amount as a percentage of current resources
