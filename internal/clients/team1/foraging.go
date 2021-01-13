@@ -241,17 +241,20 @@ func (c *client) DecideForage() (shared.ForageDecision, error) {
 	} else if c.emotionalState() == Desperate {
 		c.Logf("[Forage decision]: desperate")
 		return c.desperateForage(), nil
-	} else if c.config.flipForage {
-		c.Logf("[Forage decision]: flip")
-		return c.flipForage(), nil
-	} else if c.config.regressionForage {
-		c.Logf("[Forage decision]: regression")
-		return c.regressionForage()
-	} else if c.config.roiForage {
-		c.Logf("[Forage decision]: roi")
-		return c.roiForage(), nil
 	} else {
-		return shared.ForageDecision{Type: shared.DeerForageType, Contribution: 0}, fmt.Errorf("Can't decide on a forage for %v", c.GetID())
+		switch c.config.forageMethod {
+		case FlipForage:
+			c.Logf("[Forage decision]: flip")
+			return c.flipForage(), nil
+		case ROIForage:
+			c.Logf("[Forage decision]: roi")
+			return c.roiForage(), nil
+		case RegressionForage:
+			c.Logf("[Forage decision]: regression")
+			return c.regressionForage()
+		default:
+			return shared.ForageDecision{Type: shared.DeerForageType, Contribution: 0}, fmt.Errorf("Can't decide on a forage for %v", c.GetID())
+		}
 	}
 }
 

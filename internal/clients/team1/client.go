@@ -61,9 +61,7 @@ func ROIClient(id shared.ClientID) baseclient.Client {
 			desperateStealAmount:                30,
 			maxOpinion:                          10,
 			soloDeerHuntContribution:            40,
-			flipForage:                          false,
-			roiForage:                           true,
-			regressionForage:                    false,
+			forageMethod:                        ROIForage,
 		},
 
 		forageHistory:     ForageHistory{},
@@ -90,9 +88,7 @@ func RegressionClient(id shared.ClientID) baseclient.Client {
 			desperateStealAmount:                30,
 			maxOpinion:                          10,
 			soloDeerHuntContribution:            40,
-			flipForage:                          false,
-			roiForage:                           false,
-			regressionForage:                    true,
+			forageMethod:                        RegressionForage,
 		},
 
 		forageHistory:     ForageHistory{},
@@ -119,9 +115,7 @@ func FlipClient(id shared.ClientID) baseclient.Client {
 			desperateStealAmount:                30,
 			maxOpinion:                          10,
 			soloDeerHuntContribution:            40,
-			flipForage:                          true,
-			roiForage:                           false,
-			regressionForage:                    false,
+			forageMethod:                        FlipForage,
 		},
 
 		forageHistory:     ForageHistory{},
@@ -131,6 +125,14 @@ func FlipClient(id shared.ClientID) baseclient.Client {
 		trustTeams:        map[shared.ClientID]float64{},
 	}
 }
+
+type ForageMethod int
+
+const (
+	FlipForage ForageMethod = iota
+	ROIForage
+	RegressionForage
+)
 
 type EmotionalState int
 type Opinion int
@@ -163,9 +165,7 @@ type team1Config struct {
 	flipForageScale float64
 
 	// Choosing how to forage
-	flipForage       bool
-	roiForage        bool
-	regressionForage bool
+	forageMethod ForageMethod
 
 	// forageContributionCapPercent is the maximum percent of current resources we
 	// will use for foraging
