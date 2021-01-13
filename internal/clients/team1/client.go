@@ -100,33 +100,6 @@ func RegressionClient(id shared.ClientID) baseclient.Client {
 	}
 }
 
-func FlipClient(id shared.ClientID) baseclient.Client {
-	return &client{
-		BaseClient:    baseclient.NewClient(id),
-		BasePresident: &baseclient.BasePresident{},
-		config: team1Config{
-			anxietyThreshold:                    50,
-			randomForageTurns:                   0,
-			flipForageScale:                     0.3,
-			forageContributionCapPercent:        0.2,
-			forageContributionAnxiousCapPercent: 0.8,
-			forageContributionNoisePercent:      0.01,
-			evadeTaxes:                          false,
-			kickstartTaxPercent:                 0,
-			desperateStealAmount:                30,
-			maxOpinion:                          10,
-			soloDeerHuntContribution:            40,
-			forageMethod:                        FlipForage,
-		},
-
-		forageHistory:     ForageHistory{},
-		reportedResources: map[shared.ClientID]bool{},
-		teamOpinions:      map[shared.ClientID]Opinion{},
-		receivedOffer:     map[shared.ClientID]shared.Resources{},
-		trustTeams:        map[shared.ClientID]float64{},
-	}
-}
-
 type ForageMethod int
 
 const (
